@@ -8,6 +8,7 @@ itsdangerous==2.0.1
 Jinja2==3.0.1
 MarkupSafe==2.0.1
 psycopg2==2.9.1
+PyJWT==2.1.0
 SQLAlchemy==1.4.23
 typing-extensions==3.10.0.0
 Werkzeug==2.0.1

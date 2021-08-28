@@ -1,6 +1,7 @@
 from flask import Flask,jsonify,request
 from model import db,User
 import random, string
+import jwt
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://bmg:bmg@192.168.99.101:5432/bmg'
 db.init_app(app)
@@ -20,5 +21,13 @@ def register():
         return jsonify({'status':'ok'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
+@app.route('/login',methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+    user = User.query.filter(User.username == username).filter(User.password == password).one()
+    token = jwt.encode({'username':username,'password':password},'secret')
+    return {'name':user.name,'email':user.email,'referral_code':user.referral_code,'token':token}
 if __name__ == '__main__':
     app.run()
