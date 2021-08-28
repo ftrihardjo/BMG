@@ -1,0 +1,16 @@
+version: '3'
+services:
+  api:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+  db:
+    environment:
+      POSTGRES_USER: bmg
+      POSTGRES_PASSWORD: bmg
+      POSTGRES_DB: bmg
+    image: postgres:latest
+    ports:
+      - 5432:5432
