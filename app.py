@@ -63,5 +63,13 @@ def ref_code():
         return jsonify({'status':'invalid'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
+@app.route('/users_by_name',methods=['POST'])
+def users_by_name():
+    data = request.get_json()
+    answers = []
+    users = User.query.filter(User.name == data['name']).all()
+    for user in users:
+        answers.append({'username':user.username})
+    return jsonify(answers)
 if __name__ == '__main__':
     app.run()
