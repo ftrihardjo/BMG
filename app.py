@@ -49,5 +49,19 @@ def edit():
         return jsonify({'status':'ok'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
+@app.route('/ref_code',methods=['POST'])
+def ref_code():
+    try:
+        data = request.get_json()
+        token = data['token']
+        if not token or token == '':
+            raise AssertionError('No token provided!')
+        payload = jwt.decode(token,app.config['SECRET_KEY'],algorithms=['HS256'])
+        user = User.query.filter(User.username == payload['username']).one()
+        if data['referral_code'] == user.referral_code:
+            return jsonify({'status':'ok'})
+        return jsonify({'status':'invalid'})
+    except AssertionError as error:
+        return jsonify({'status':'{0}'.format(error)})
 if __name__ == '__main__':
     app.run()
