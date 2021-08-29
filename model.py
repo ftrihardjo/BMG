@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash,check_password_hash
 from sqlalchemy.orm import validates
 import re
+import hashlib
 db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'user'
@@ -18,12 +18,11 @@ class User(db.Model):
         if User.query.filter(User.username == username).first():
             raise AssertionError('Username already exist!')
         return username
-    def set_password(self,password):
+    @validates('password')
+    def validate_password(self,key,password):
         if not password or password == '':
             raise AssertionError('No password provided!')
-        self.password = generate_password_hash(password)
-    def check_password(self,password):
-        check_password_hash(self.password,password)
+        return hashlib.md5(password.encode()).hexdigest()
     @validates('email')
     def validate_email(self,key,email):
         if not email or email == '':
@@ -33,3 +32,8 @@ class User(db.Model):
         if User.query.filter(User.email == email).first():
             raise AssertionError('Email already exist!')
         return email
+    @validates('name')
+    def validate_name(self,key,name):
+        if not name or name == '':
+            raise AssertionError('No name provided!')
+        return name
