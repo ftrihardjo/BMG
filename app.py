@@ -3,6 +3,8 @@ from model import db,User
 import random, string
 import jwt
 import hashlib
+from urllib.request import urlopen
+import json
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://bmg:bmg@192.168.99.101:5432/bmg'
 app.config['SECRET_KEY'] = 'Drmhze6EPcv0fN_81Bj-nA'
@@ -71,5 +73,13 @@ def users_by_name():
     for user in users:
         answers.append({'username':user.username})
     return jsonify(answers)
+@app.route('/hero',methods=['POST'])
+def hero():
+    with urlopen('https://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json') as url:
+        information = request.get_json()
+        data = json.loads(url.read().decode())
+        for character in data['data'].keys():
+            if data['data'][character]['name'][:len(information['name'])] == information['name']:
+                return jsonify(data['data'][character])
 if __name__ == '__main__':
     app.run()
