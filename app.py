@@ -6,7 +6,7 @@ import hashlib
 from urllib.request import urlopen
 import json
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://bmg:bmg@192.168.99.101:5432/bmg'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://bmg:bmg@192.168.99.102:5432/bmg'
 app.config['SECRET_KEY'] = 'Drmhze6EPcv0fN_81Bj-nA'
 db.init_app(app)
 db.create_all(app=app)
@@ -25,7 +25,7 @@ def register():
         return jsonify({'status':'ok'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
-@app.route('/login',methods=['POST'])
+@app.route('/login')
 def login():
     data = request.get_json()
     username = data['username']
@@ -33,7 +33,7 @@ def login():
     user = User.query.filter(User.username == username).one()
     token = jwt.encode({'username':username,'password':password},app.config['SECRET_KEY'],algorithm='HS256')
     return jsonify({'name':user.name,'email':user.email,'referral_code':user.referral_code,'token':token})
-@app.route('/edit',methods=['POST'])
+@app.route('/edit',methods=['PUT'])
 def edit():
     try:
         data = request.get_json()
@@ -51,7 +51,7 @@ def edit():
         return jsonify({'status':'ok'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
-@app.route('/ref_code',methods=['POST'])
+@app.route('/ref_code')
 def ref_code():
     try:
         data = request.get_json()
@@ -65,7 +65,7 @@ def ref_code():
         return jsonify({'status':'invalid'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
-@app.route('/users_by_name',methods=['POST'])
+@app.route('/users_by_name')
 def users_by_name():
     data = request.get_json()
     answers = []
@@ -73,7 +73,7 @@ def users_by_name():
     for user in users:
         answers.append({'username':user.username})
     return jsonify(answers)
-@app.route('/hero',methods=['POST'])
+@app.route('/hero')
 def hero():
     with urlopen('https://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json') as url:
         information = request.get_json()
