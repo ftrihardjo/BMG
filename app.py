@@ -25,7 +25,7 @@ def register():
         return jsonify({'status':'ok'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
-@app.route('/login')
+@app.route('/login',methods=['POST'])
 def login():
     data = request.get_json()
     username = data['username']
@@ -51,7 +51,7 @@ def edit():
         return jsonify({'status':'ok'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
-@app.route('/ref_code')
+@app.route('/ref_code',methods=['POST'])
 def ref_code():
     try:
         data = request.get_json()
@@ -65,7 +65,7 @@ def ref_code():
         return jsonify({'status':'invalid'})
     except AssertionError as error:
         return jsonify({'status':'{0}'.format(error)})
-@app.route('/users_by_name')
+@app.route('/users_by_name',methods=['POST'])
 def users_by_name():
     data = request.get_json()
     answers = []
@@ -73,7 +73,7 @@ def users_by_name():
     for user in users:
         answers.append({'username':user.username})
     return jsonify(answers)
-@app.route('/hero')
+@app.route('/hero',methods=['POST'])
 def hero():
     with urlopen('https://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json') as url:
         information = request.get_json()
